@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In — Chatterbox</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="chat-container auth-page">
+    <div class="auth-card">
+      <h1>CHATTERBOX</h1>
+      <p class="description">Log in to access your account and continue chatting with the community.</p>
+      <section class="auth-grid">
+        <div>
+          <h2>Log in</h2>
+          <form action="/login" method="post">
+            <input name="username" placeholder="Username" required maxlength="20" />
+            <input name="password" type="password" placeholder="Password" required />
+            <button type="submit" class="primary">Log In</button>
+          </form>
+        </div>
+        <div style="text-align:center;">
+          <p>Need an account?</p>
+          <a href="/signup" class="alt-link">Create one</a>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

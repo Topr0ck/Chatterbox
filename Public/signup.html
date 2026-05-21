@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — Chatterbox</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="chat-container auth-page">
+    <div class="auth-card">
+      <h1>CHATTERBOX</h1>
+      <p class="description">Create your account to join the conversation, share images, and chat with others.</p>
+      <section class="auth-grid">
+        <div>
+          <h2>Create account</h2>
+          <form action="/signup" method="post" enctype="multipart/form-data">
+            <input name="username" placeholder="Username" required maxlength="20" />
+            <input name="password" type="password" placeholder="Password" required />
+            <input name="avatar" type="file" accept="image/*" />
+            <button type="submit" class="primary">Sign Up</button>
+          </form>
+        </div>
+        <div style="text-align:center;">
+          <p>Already have an account?</p>
+          <a href="/login" class="alt-link">Log in</a>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign Up / Log In</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="chat-container">
+    <h1>Account</h1>
+    <section style="display:grid;gap:18px;max-width:420px;margin:0 auto">
+      <form id="signup" action="/signup" method="post" enctype="multipart/form-data">
+        <h3>Create account</h3>
+        <input name="username" placeholder="Username" required maxlength="20">
+        <input name="password" type="password" placeholder="Password" required>
+        <label style="font-size:0.9rem;color:#c2c2c2">Optional avatar image</label>
+        <input name="avatar" type="file" accept="image/*">
+        <button type="submit">Sign up</button>
+      </form>
+
+      <form id="login" action="/login" method="post">
+        <h3>Log in</h3>
+        <input name="username" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button type="submit">Log in</button>
+      </form>
+
+      <p style="color:#bdbdbd;text-align:center">After signing in you'll be redirected to the chat.</p>
+    </section>
+  </main>
+</body>
+</html>
