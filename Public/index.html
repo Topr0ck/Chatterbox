@@ -1,14 +1,80 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chatterbox</title>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <section id="login" class="panel login-panel" aria-label="Login panel">
+      <div class="login-copy">
+        <div class="brand-title">Chatterbox</div>
+        <p class="login-desc">Fast global chat with secure Socket.IO connection.</p>
+      </div>
+      <div class="login-form">
+        <label for="usernameInput">Display name</label>
+        <input id="usernameInput" name="username" maxlength="20" placeholder="Enter your display name" autocomplete="username" />
+        <button id="joinBtn" type="button">Join Chat</button>
+      </div>
+    </section>
 
-  <h1>Chatterbox</h1>
+    <section id="chat" class="chat-layout hidden" aria-label="Chat interface">
+      <main class="panel chat-panel" aria-label="Messages">
+        <div class="chat-header">
+          <div class="chat-header-copy">
+            <p class="room-label" id="roomLabel">Public Chat Room</p>
+            <p class="room-subtitle" id="roomSubtitle">Global live chat</p>
+          </div>
+          <div class="chat-header-actions">
+            <div class="status-pill" id="connectionStatus">Connecting...</div>
+            <button id="clearDmBtn" class="secondary-btn hidden" type="button">Public Chat</button>
+          </div>
+        </div>
 
-  <!-- loads your JS file -->
-  <script src="script.js"></script>
+        <div class="messages" id="messages"></div>
 
+        <div class="input-row">
+          <div class="message-input-wrap">
+            <input id="messageInput" placeholder="Type your message..." autocomplete="off" />
+          </div>
+          <button id="imageUploadBtn" type="button" class="icon-btn" title="Upload image">📷</button>
+          <button id="sendBtn" type="button">Send</button>
+          <input id="imageInput" type="file" accept="image/*" hidden />
+        </div>
+      </main>
+
+      <aside class="panel sidebar" aria-label="Friends and online users">
+        <div class="sidebar-header">
+          <div>
+            <h2>Friends</h2>
+            <p>Chat with saved contacts</p>
+          </div>
+          <span id="friendsCount" class="friends-count"></span>
+        </div>
+        <ul id="friends" class="friend-list"></ul>
+
+        <div class="sidebar-header sidebar-divider">
+          <div>
+            <h2>Online Users</h2>
+            <p>Click to DM or add friend</p>
+          </div>
+        </div>
+        <ul id="users" class="user-list"></ul>
+      </aside>
+    </section>
+
+    <div id="profileCard" class="profile-card hidden">
+      <img id="profileAvatar" class="profile-avatar" alt="Your avatar" />
+      <div class="profile-info">
+        <span id="profileName" class="profile-name"></span>
+        <small>Logged in</small>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>

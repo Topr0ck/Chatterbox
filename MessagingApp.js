@@ -1,3 +1,4 @@
+console.log("SERVER FILE LOADED");
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -9,6 +10,9 @@ const multer = require('multer');
 const cookieParser = require('cookie-parser');
 
 const USERS_FILE = path.join(__dirname, 'users.json');
+const MESSAGES_FILE = path.join(__dirname, 'messages.json');
+const MESSAGE_HISTORY_LIMIT = 1000;
+const MESSAGE_SEND_LIMIT = 100;
 
 function readUsers() {
   try {
@@ -21,6 +25,21 @@ function readUsers() {
 
 function writeUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+function readMessages() {
+  try {
+    const raw = fs.readFileSync(MESSAGES_FILE, 'utf8');
+    return JSON.parse(raw || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function writeMessages(messagesData) {
+  fs.writeFile(MESSAGES_FILE, JSON.stringify(messagesData, null, 2), (err) => {
+    if (err) console.error('Failed to save messages:', err);
+  });
 }
 
 function isValidUserCookie(name) {
@@ -152,7 +171,7 @@ app.get('/logout', (req, res) => {
 });
 
 const usernames = new Map();
-const messages = [];
+const messages = readMessages().slice(-MESSAGE_HISTORY_LIMIT);
 const feedbacks = [];
 const timeouts = new Map();
 const messageRates = new Map();
@@ -160,6 +179,18 @@ let serverOpen = true;
 
 function generateId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+}
+
+function getUserRoom(username) {
+  return `user:${String(username).toLowerCase()}`;
+}
+
+function persistMessage(message) {
+  messages.push(message);
+  while (messages.length > MESSAGE_HISTORY_LIMIT) {
+    messages.shift();
+  }
+  writeMessages(messages);
 }
 
 function emitUserList() {
@@ -233,11 +264,15 @@ io.on('connection', (socket) => {
       return socket.disconnect(true);
     }
     usernames.set(socket.id, { username, avatar });
+    socket.join(getUserRoom(username));
     io.emit('system message', createSystemMessage(`${username} joined the chat.`));
     emitUserList();
     // send current list to the newly connected client as well
-    socket.emit('user list', Array.from(usernames.entries()).map(([id, u]) => ({ id, username: u.username, avatar: u.avatar })));
+    const usersList = Array.from(usernames.entries()).map(([id, u]) => ({ id, username: u.username, avatar: u.avatar }));
+    socket.emit('user list', usersList);
     socket.emit('server status', { open: serverOpen });
+    const historyMessages = messages.filter((msg) => !msg.private).slice(-MESSAGE_SEND_LIMIT);
+    historyMessages.forEach((historyMessage) => socket.emit('chat message', historyMessage));
     if (username === 'ADMIN / OWNER') {
       emitAdminData(socket);
     }
@@ -295,7 +330,7 @@ io.on('connection', (socket) => {
       time: new Date().toISOString(),
       private: false,
     };
-    messages.push(message);
+    persistMessage(message);
     io.emit('chat message', message);
   });
 
@@ -348,8 +383,9 @@ io.on('connection', (socket) => {
       mentions,
       time: new Date().toISOString(),
     };
-    messages.push(message);
-    socket.to(targetId).emit('private message', message);
+    persistMessage(message);
+    const targetRoom = getUserRoom(targetUser.username);
+    io.to(targetRoom).emit('private message', message);
     socket.emit('private message', message);
   });
 
@@ -417,5 +453,9 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Public chat running on http://localhost:${PORT}`);
+});
+
+app.get('/test', (req, res) => {
+  res.send(__dirname);
 });
 
