@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser');
 const USERS_FILE = path.join(__dirname, 'users.json');
 const MESSAGES_FILE = path.join(__dirname, 'messages.json');
 const MESSAGE_HISTORY_LIMIT = 1000;
-const MESSAGE_SEND_LIMIT = 100;
+const MESSAGE_SEND_LIMIT = 0;
 
 function readUsers() {
   try {
